@@ -1,0 +1,12 @@
+// Program output. User DekaScript imports `echo`; it must not name `console`.
+//
+// No `bridge`. Native is V8 (isolate rebinds `console.log` to stdout);
+// the browser already has `console.log`. Same call on both hosts.
+// This package is the only place that may name it (RFD 21 / RFD 32).
+
+export fn echo(message: string) {
+  match (unsafe { console.log(message) }) {
+    Ok(v) => v,
+    Err(e) => e,
+  }
+}
