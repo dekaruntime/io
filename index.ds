@@ -12,9 +12,12 @@
 ///   </Parameter>
 ///   <ReturnType type="void" />
 /// </Function>
-export fn echo(message: string) {
-  match (unsafe { console.log(message) }) {
-    Ok(v) => v,
-    Err(e) => e,
-  }
+export fn echo(message: string) void {
+  // deka#460: `unsafe<void>` declares that the block hands nothing back.
+  //
+  // The Result is deliberately discarded. If `console.log` throws there is no
+  // channel left to report the failure on -- reporting it would use the thing
+  // that just failed. The previous shape matched `Ok(v) => v, Err(e) => e`,
+  // which only typechecked because both arms were `Infer`.
+  unsafe<void> { console.log(message) }
 }
