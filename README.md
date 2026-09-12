@@ -11,13 +11,13 @@ echo("" + (1 + 2))
 
 ## Internals
 
-**No `bridge`.** Native is still V8: the isolate rebinds `console.log` to stdout (`__print`), so Hats `.stdout` keeps matching. The browser already has `console.log`. One call:
+**No `bridge`.** Native is still V8: the isolate rebinds `console.log` to stdout (`__print`), so Hats `.stdout` keeps matching. The browser already has `console.log`. One call, summoned as `total void` from `./shim.mjs` (rfd#39 / deka#913):
 
 ```
-unsafe { console.log(message) }
+summon { total log(message: string): void } from "./shim.mjs"
 ```
 
-User `.ds` never names `console`. That lives only in this package. `unsafe { console.log(...) }` in app code stays JS-mode (RFD 21).
+User `.ds` never names `console`. That lives only in this package's shim. `unsafe { console.log(...) }` in app code stays JS-mode (RFD 21).
 
 No `host.kinds`, no `from "host"` branch, no `io/native` vs `io/browser`.
 
